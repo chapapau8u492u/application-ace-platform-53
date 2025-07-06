@@ -42,10 +42,13 @@ async function initMongoDB() {
 }
 
 // Middleware
-app.use(cors({
-  origin: ['https://preview--application-ace-platform.lovable.app', 'http://localhost:5173', 'https://job-hunter-backend-app.vercel.app/'],
-  credentials: true
-}));
+// app.use(cors({
+//   origin: ['https://preview--application-ace-platform.lovable.app', 'http://localhost:5173', 'https://job-hunter-backend-app.vercel.app'],
+//   credentials: true
+// }));
+
+//allow all in development
+app.use(cors());
 app.use(express.json());
 
 // Create HTTP server

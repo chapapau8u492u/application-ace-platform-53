@@ -12,7 +12,7 @@
   "host_permissions": [
     "https://www.linkedin.com/*",
     "https://internshala.com/*",
-    "https://job-hunter-backend-app.vercel.app//*",
+    "https://job-hunter-backend-app.vercel.app/*",
     "https://preview--application-ace-platform.lovable.app/*",
     "https://*.lovable.app/*"
   ],

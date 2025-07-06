@@ -31,7 +31,7 @@ const statusConfig = {
   'Offer': { color: 'bg-purple-50 text-purple-700 border-purple-200' }
 };
 
-const BACKEND_URL = 'https://job-hunter-backend-app.vercel.app/';
+const BACKEND_URL = 'https://job-hunter-backend-app.vercel.app';
 
 export const RecentApplications = () => {
   const [applications, setApplications] = useState<JobApplication[]>([]);

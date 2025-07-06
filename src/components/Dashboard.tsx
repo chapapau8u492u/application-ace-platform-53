@@ -20,7 +20,7 @@ interface JobApplication {
   updatedAt?: string;
 }
 
-const BACKEND_URL = 'http://localhost:3001';
+const BACKEND_URL = 'https://job-hunter-backend-app.vercel.app/';
 
 export const Dashboard = () => {
   const [applications, setApplications] = useState<JobApplication[]>([]);

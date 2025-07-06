@@ -457,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function sendToJobTracker(jobData) {
     console.log('Sending job data to JobTracker:', jobData);
 
-    const apiUrl = 'http://localhost:3001/api/applications';
+    const apiUrl = 'https://job-hunter-backend-app.vercel.app//api/applications';
     
     fetch(apiUrl, {
       method: 'POST',

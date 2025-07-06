@@ -66,7 +66,7 @@ const statusConfig = {
   }
 };
 
-const BACKEND_URL = 'http://localhost:3001';
+const BACKEND_URL = 'https://job-hunter-backend-app.vercel.app/';
 
 export const Applications = () => {
   const [applications, setApplications] = useState<JobApplication[]>([]);

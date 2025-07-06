@@ -288,7 +288,6 @@ export const Applications = () => {
     setShowViewDialog(true);
   };
 
-  // Fixed search functionality
   const filteredApplications = applications.filter(app => {
     const searchLower = searchTerm.toLowerCase();
     const matchesSearch = !searchTerm || (
@@ -461,45 +460,48 @@ export const Applications = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {filteredApplications.map((app) => (
               <div key={app.id} className="group bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
-                {/* Card Header */}
+                {/* Card Header - Fixed layout */}
                 <div className="p-6 border-b border-gray-100">
                   <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white font-semibold text-lg shadow-sm">
+                    <div className="flex items-center space-x-3 min-w-0 flex-1 pr-2">
+                      <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white font-semibold text-lg shadow-sm flex-shrink-0">
                         {app.company.charAt(0).toUpperCase()}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h3 className="font-semibold text-gray-900 text-base mb-1 truncate">
+                        <h3 className="font-semibold text-gray-900 text-base mb-1 truncate" title={app.company}>
                           {app.company}
                         </h3>
-                        <p className="text-gray-600 font-medium text-sm truncate">{app.position}</p>
+                        <p className="text-gray-600 font-medium text-sm truncate" title={app.position}>{app.position}</p>
                       </div>
                     </div>
                     
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity rounded-lg h-8 w-8 p-0">
-                          <MoreHorizontal className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48">
-                        <DropdownMenuItem onClick={() => viewApplication(app)} className="cursor-pointer">
-                          <Eye className="w-4 h-4 mr-3" />
-                          View Details
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => editApplication(app)} className="cursor-pointer">
-                          <Edit3 className="w-4 h-4 mr-3" />
-                          Edit Application
-                        </DropdownMenuItem>
-                        <DropdownMenuItem 
-                          onClick={() => deleteApplication(app.id)}
-                          className="text-red-600 cursor-pointer"
-                        >
-                          <Trash2 className="w-4 h-4 mr-3" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    {/* Fixed action button positioning */}
+                    <div className="flex-shrink-0 ml-2">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity rounded-lg h-8 w-8 p-0 flex-shrink-0">
+                            <MoreHorizontal className="w-4 h-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48 bg-white border shadow-lg z-50">
+                          <DropdownMenuItem onClick={() => viewApplication(app)} className="cursor-pointer">
+                            <Eye className="w-4 h-4 mr-3" />
+                            View Details
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => editApplication(app)} className="cursor-pointer">
+                            <Edit3 className="w-4 h-4 mr-3" />
+                            Edit Application
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => deleteApplication(app.id)}
+                            className="text-red-600 cursor-pointer"
+                          >
+                            <Trash2 className="w-4 h-4 mr-3" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </div>
 
                   {/* Status and Date */}
@@ -509,7 +511,7 @@ export const Applications = () => {
                       <span className="text-xs font-medium text-gray-600">{app.status}</span>
                     </div>
                     <div className="flex items-center space-x-1 text-gray-500">
-                      <Clock className="w-3 h-3" />
+                      <Calendar className="w-3 h-3" />
                       <span className="text-xs">{app.appliedDate}</span>
                     </div>
                   </div>
@@ -554,35 +556,35 @@ export const Applications = () => {
               {filteredApplications.map((app) => (
                 <div key={app.id} className="p-6 hover:bg-gray-50 transition-colors group">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4 flex-1 min-w-0">
+                    <div className="flex items-center space-x-4 flex-1 min-w-0 pr-4">
                       <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm shadow-sm flex-shrink-0">
                         {app.company.charAt(0).toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center space-x-3 mb-1">
-                          <h3 className="font-semibold text-gray-900 text-base truncate">{app.company}</h3>
+                          <h3 className="font-semibold text-gray-900 text-base truncate flex-1" title={app.company}>{app.company}</h3>
                           {app.jobUrl && (
                             <button 
                               onClick={() => window.open(app.jobUrl, '_blank')}
-                              className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-md hover:bg-gray-100"
+                              className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-md hover:bg-gray-100 flex-shrink-0"
                               title="View job posting"
                             >
                               <ExternalLink className="w-4 h-4" />
                             </button>
                           )}
                         </div>
-                        <p className="text-gray-700 font-medium text-sm mb-2 truncate">{app.position}</p>
+                        <p className="text-gray-700 font-medium text-sm mb-2 truncate" title={app.position}>{app.position}</p>
                         <div className="flex items-center space-x-4 text-xs text-gray-500">
                           {app.location && (
                             <div className="flex items-center space-x-1">
                               <MapPin className="w-3 h-3" />
-                              <span>{app.location}</span>
+                              <span className="truncate">{app.location}</span>
                             </div>
                           )}
                           {app.salary && (
                             <div className="flex items-center space-x-1">
                               <DollarSign className="w-3 h-3" />
-                              <span>{app.salary}</span>
+                              <span className="truncate">{app.salary}</span>
                             </div>
                           )}
                           <div className="flex items-center space-x-1">
@@ -593,11 +595,12 @@ export const Applications = () => {
                       </div>
                     </div>
                     
-                    <div className="flex items-center space-x-4 ml-4 flex-shrink-0">
+                    {/* Fixed action buttons positioning */}
+                    <div className="flex items-center space-x-4 flex-shrink-0">
                       <select
                         value={app.status}
                         onChange={(e) => updateApplicationStatus(app.id, e.target.value as JobApplication['status'])}
-                        className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 cursor-pointer"
+                        className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 cursor-pointer min-w-[140px]"
                       >
                         <option value="Applied">Applied</option>
                         <option value="Under Review">Under Review</option>
@@ -608,11 +611,11 @@ export const Applications = () => {
                       
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm" className="text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0">
+                          <Button variant="ghost" size="sm" className="text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0 flex-shrink-0">
                             <MoreHorizontal className="w-4 h-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuContent align="end" className="w-48 bg-white border shadow-lg z-50">
                           <DropdownMenuItem onClick={() => viewApplication(app)} className="cursor-pointer">
                             <Eye className="w-4 h-4 mr-3" />
                             View Details

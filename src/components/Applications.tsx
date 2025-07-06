@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, Filter, MoreHorizontal, Building2, Calendar, ExternalLink, MapPin, DollarSign, Eye, Edit3, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,6 +16,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 
 interface JobApplication {
@@ -153,7 +155,7 @@ export const Applications = () => {
         if (response.ok) {
           const result = await response.json();
           console.log('Application added successfully:', result.data);
-          loadApplications(); // Reload to get updated data
+          loadApplications();
           toast({
             title: "Application Added Successfully! 🎉",
             description: `${newApplication.position} at ${newApplication.company}`,
@@ -216,7 +218,7 @@ export const Applications = () => {
         });
 
         if (response.ok) {
-          loadApplications(); // Reload to get updated data
+          loadApplications();
           toast({
             title: "Application Updated",
             description: "Application has been updated successfully",
@@ -249,7 +251,7 @@ export const Applications = () => {
         });
         
         if (response.ok) {
-          loadApplications(); // Reload to get updated data
+          loadApplications();
           toast({
             title: "Application Deleted",
             description: "Application has been removed successfully",
@@ -282,9 +284,15 @@ export const Applications = () => {
     setShowViewDialog(true);
   };
 
+  // Fixed search functionality
   const filteredApplications = applications.filter(app => {
-    const matchesSearch = app.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         app.position.toLowerCase().includes(searchTerm.toLowerCase());
+    const searchLower = searchTerm.toLowerCase();
+    const matchesSearch = !searchTerm || (
+      app.company.toLowerCase().includes(searchLower) ||
+      app.position.toLowerCase().includes(searchLower) ||
+      (app.location && app.location.toLowerCase().includes(searchLower)) ||
+      (app.salary && app.salary.toLowerCase().includes(searchLower))
+    );
     const matchesFilter = filterStatus === 'All' || app.status === filterStatus;
     return matchesSearch && matchesFilter;
   });
@@ -404,6 +412,13 @@ export const Applications = () => {
           </div>
         </div>
       </div>
+
+      {/* Results count */}
+      {searchTerm && (
+        <div className="text-slate-600 text-sm">
+          Found {filteredApplications.length} result{filteredApplications.length !== 1 ? 's' : ''} for "{searchTerm}"
+        </div>
+      )}
 
       {/* Applications Display */}
       {filteredApplications.length === 0 ? (
@@ -607,76 +622,128 @@ export const Applications = () => {
         />
       )}
 
-      {/* View Application Dialog */}
+      {/* Improved View Application Dialog */}
       <Dialog open={showViewDialog} onOpenChange={setShowViewDialog}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Application Details</DialogTitle>
+            <DialogTitle className="text-2xl font-bold">Application Details</DialogTitle>
+            <DialogDescription>
+              Complete information about this job application
+            </DialogDescription>
           </DialogHeader>
           {selectedApp && (
-            <div className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
+            <div className="space-y-6">
+              {/* Company Header */}
+              <div className="flex items-center space-x-4 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-100">
+                <div className={`w-20 h-20 bg-gradient-to-br ${statusConfig[selectedApp.status].gradient} rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-lg`}>
                   {selectedApp.company.charAt(0).toUpperCase()}
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-slate-900">{selectedApp.company}</h2>
-                  <p className="text-lg text-slate-600">{selectedApp.position}</p>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-slate-500">Status</label>
-                  <p className={`px-3 py-1 rounded-full text-sm font-medium border inline-block ${statusConfig[selectedApp.status].color}`}>
+                <div className="flex-1">
+                  <h2 className="text-3xl font-bold text-slate-900 mb-1">{selectedApp.company}</h2>
+                  <p className="text-xl text-slate-600 mb-2">{selectedApp.position}</p>
+                  <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border ${statusConfig[selectedApp.status].color}`}>
+                    <span>{statusConfig[selectedApp.status].icon}</span>
                     {selectedApp.status}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-slate-500">Applied Date</label>
-                  <p className="text-slate-900">{selectedApp.appliedDate}</p>
-                </div>
-                {selectedApp.location && (
-                  <div>
-                    <label className="text-sm font-medium text-slate-500">Location</label>
-                    <p className="text-slate-900">{selectedApp.location}</p>
                   </div>
-                )}
-                {selectedApp.salary && (
-                  <div>
-                    <label className="text-sm font-medium text-slate-500">Salary</label>
-                    <p className="text-slate-900">{selectedApp.salary}</p>
-                  </div>
-                )}
+                </div>
               </div>
               
+              {/* Application Details Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="bg-slate-50 p-4 rounded-lg">
+                    <label className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Applied Date</label>
+                    <p className="text-lg text-slate-900 font-medium mt-1">{selectedApp.appliedDate}</p>
+                  </div>
+                  
+                  {selectedApp.location && (
+                    <div className="bg-slate-50 p-4 rounded-lg">
+                      <label className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Location</label>
+                      <div className="flex items-center gap-2 mt-1">
+                        <MapPin className="w-4 h-4 text-slate-500" />
+                        <p className="text-lg text-slate-900 font-medium">{selectedApp.location}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="space-y-4">
+                  {selectedApp.salary && (
+                    <div className="bg-slate-50 p-4 rounded-lg">
+                      <label className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Salary</label>
+                      <div className="flex items-center gap-2 mt-1">
+                        <DollarSign className="w-4 h-4 text-slate-500" />
+                        <p className="text-lg text-slate-900 font-medium">{selectedApp.salary}</p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {selectedApp.createdAt && (
+                    <div className="bg-slate-50 p-4 rounded-lg">
+                      <label className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Added to Tracker</label>
+                      <p className="text-lg text-slate-900 font-medium mt-1">{new Date(selectedApp.createdAt).toLocaleDateString()}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              {/* Job URL */}
               {selectedApp.jobUrl && (
-                <div>
-                  <label className="text-sm font-medium text-slate-500">Job URL</label>
+                <div className="bg-slate-50 p-4 rounded-lg">
+                  <label className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2 block">Job Posting</label>
                   <a 
                     href={selectedApp.jobUrl} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-700 underline break-all"
+                    className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 underline font-medium break-all"
                   >
-                    {selectedApp.jobUrl}
+                    <ExternalLink className="w-4 h-4 flex-shrink-0" />
+                    View Original Job Posting
                   </a>
                 </div>
               )}
               
+              {/* Description */}
               {selectedApp.description && (
-                <div>
-                  <label className="text-sm font-medium text-slate-500">Description</label>
-                  <p className="text-slate-900 whitespace-pre-line">{selectedApp.description}</p>
+                <div className="bg-slate-50 p-4 rounded-lg">
+                  <label className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2 block">Job Description</label>
+                  <div className="text-slate-900 whitespace-pre-line text-sm leading-relaxed max-h-40 overflow-y-auto">
+                    {selectedApp.description}
+                  </div>
                 </div>
               )}
               
+              {/* Notes */}
               {selectedApp.notes && (
-                <div>
-                  <label className="text-sm font-medium text-slate-500">Notes</label>
-                  <p className="text-slate-900 whitespace-pre-line">{selectedApp.notes}</p>
+                <div className="bg-slate-50 p-4 rounded-lg">
+                  <label className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2 block">Notes</label>
+                  <p className="text-slate-900 whitespace-pre-line text-sm leading-relaxed">{selectedApp.notes}</p>
                 </div>
               )}
+              
+              {/* Action Buttons */}
+              <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowViewDialog(false);
+                    editApplication(selectedApp);
+                  }}
+                  className="flex items-center gap-2"
+                >
+                  <Edit3 className="w-4 h-4" />
+                  Edit Application
+                </Button>
+                {selectedApp.jobUrl && (
+                  <Button
+                    onClick={() => window.open(selectedApp.jobUrl, '_blank')}
+                    className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    View Job Posting
+                  </Button>
+                )}
+              </div>
             </div>
           )}
         </DialogContent>

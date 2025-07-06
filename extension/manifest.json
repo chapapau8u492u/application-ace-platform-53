@@ -1,0 +1,37 @@
+
+{
+  "manifest_version": 3,
+  "name": "JobTracker Assistant",
+  "version": "1.0",
+  "description": "AI-powered job application tracking assistant",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://www.linkedin.com/*",
+    "https://internshala.com/*",
+    "http://localhost:3001/*",
+    "https://preview--application-ace-platform.lovable.app/*",
+    "https://*.lovable.app/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.linkedin.com/jobs/*",
+        "https://internshala.com/internship/*",
+        "https://internshala.com/job/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "JobTracker Assistant - AI Job Tracking"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}

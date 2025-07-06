@@ -1,0 +1,415 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 380px;
+      height: 520px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #f8fafc;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .container {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 16px 20px;
+      color: white;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .header-text h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .header-text p {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loading-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      padding: 20px;
+    }
+
+    .loading-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      text-align: center;
+      color: #64748b;
+    }
+
+    .loading-text h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 4px;
+    }
+
+    .loading-text p {
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .job-form {
+      flex: 1;
+      padding: 16px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .job-form::-webkit-scrollbar {
+      display: none;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .form-group {
+      flex: 1;
+    }
+
+    .form-group.full-width {
+      flex: 1;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 4px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 13px;
+      transition: all 0.2s ease;
+      background: white;
+      resize: none;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-group textarea {
+      height: 60px;
+      font-family: inherit;
+    }
+
+    .hint-bar {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      padding: 8px 12px;
+      margin: 0 20px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      color: #92400e;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .actions {
+      padding: 0 20px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      /* flex: 1; */
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: #f8fafc;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .btn-loading {
+      position: relative;
+      color: transparent !important;
+    }
+
+    .btn-loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 16px;
+      height: 16px;
+      margin: -8px 0 0 -8px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+    }
+
+    .status {
+      padding: 8px 12px;
+      margin: 0 20px 12px;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 500;
+      animation: slideDown 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .status-success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+    }
+
+    .status-error {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+    }
+
+    .no-data {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      color: #64748b;
+    }
+
+    .no-data-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      margin-bottom: 12px;
+      opacity: 0.9;
+    }
+
+    .no-data h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+
+    .no-data p {
+      font-size: 12px;
+      line-height: 1.4;
+      margin-bottom: 16px;
+      max-width: 280px;
+    }
+
+    .success-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+
+    .success-state h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+
+    .success-state p {
+      font-size: 12px;
+      line-height: 1.4;
+      color: #64748b;
+      margin-bottom: 16px;
+      max-width: 280px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-content">
+        <div class="logo">JT</div>
+        <div class="header-text">
+          <h2>JobTracker Assistant</h2>
+          <p>AI-powered job application companion</p>
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="content" id="content">
+      <div class="no-data">
+        <div class="no-data-icon">🎯</div>
+        <h3>Ready to Track!</h3>
+        <p>Navigate to a job posting on Internshala or LinkedIn, then click the button below or just click Apply on the job page.</p>
+        <button class="btn btn-primary" id="extractBtn">
+          <span id="extractText">Extract Job Data</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

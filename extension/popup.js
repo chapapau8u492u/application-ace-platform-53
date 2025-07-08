@@ -457,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function sendToJobTracker(jobData) {
     //console.log('Sending job data to JobTracker:', jobData);
 
-    const apiUrl = 'https://job-hunter-backend-sigma.vercel.app/api/applications';
+    const apiUrl = 'https://job-hunter-backend-sigma.vercel.appapi/applications';
     
     fetch(apiUrl, {
       method: 'POST',
@@ -487,7 +487,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (error.message === 'DUPLICATE_APPLICATION') {
         showStatus('❌ This application already exists in your JobTracker!', 'error');
       } else if (error.message.includes('Failed to fetch')) {
-        showStatus('❌ Cannot connect to JobTracker. Please ensure the app is running on https://job-hunter-backend-sigma.vercel.app/', 'error');
+        showStatus('❌ Cannot connect to JobTracker. Please ensure the app is running on https://job-hunter-backend-sigma.vercel.app', 'error');
       } else {
         showStatus('❌ An error occurred while saving. Please try again.', 'error');
       }

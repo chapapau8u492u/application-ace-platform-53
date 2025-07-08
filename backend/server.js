@@ -43,7 +43,7 @@ async function initMongoDB() {
 
 // Middleware
 // app.use(cors({
-//   origin: ['https://preview--application-ace-platform.lovable.app', 'http://localhost:5173', 'https://job-hunter-backend-sigma.vercel.app/'],
+//   origin: ['https://preview--application-ace-platform.lovable.app', 'http://localhost:5173', 'https://job-hunter-backend-sigma.vercel.app'],
 //   credentials: true
 // }));
 

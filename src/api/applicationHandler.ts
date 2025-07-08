@@ -1,6 +1,6 @@
 
 // Enhanced API handler for receiving job application data from the Chrome extension
-const BACKEND_URL = 'https://job-hunter-backend-sigma.vercel.app/';
+const BACKEND_URL = 'https://job-hunter-backend-sigma.vercel.app';
 
 export class ApplicationAPI {
   private static instance: ApplicationAPI;

@@ -88,7 +88,7 @@ export const Applications = () => {
 
   const checkBackendConnection = async () => {
     try {
-      const response = await fetch(`https://job-hunter-backend-o2krd9i1k-zoros-projects-73717a6e.vercel.app/health`);
+      const response = await fetch(`https://job-hunter-backend-kappa.vercel.app/health`);
       setBackendConnected(response.ok);
     } catch (error) {
       setBackendConnected(false);

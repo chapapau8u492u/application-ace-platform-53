@@ -1,6 +1,6 @@
 
 // Content script to extract job data from various job boards
-console.log('JobTracker content script loaded on:', window.location.href);
+//console.log('JobTracker content script loaded on:', window.location.href);
 
 // Check if script already loaded to prevent duplicate declarations
 if (typeof window.jobTrackerLoaded === 'undefined') {
@@ -9,7 +9,7 @@ if (typeof window.jobTrackerLoaded === 'undefined') {
   let isExtracting = false;
 
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    console.log('Content script received message:', request);
+    //console.log('Content script received message:', request);
     
     if (request.action === 'extractJobData') {
       if (isExtracting) {
@@ -22,7 +22,7 @@ if (typeof window.jobTrackerLoaded === 'undefined') {
       
       setTimeout(() => {
         const jobData = extractJobData();
-        console.log('Extracted job data:', jobData);
+        //console.log('Extracted job data:', jobData);
         
         hideExtractionLoader();
         isExtracting = false;
@@ -100,7 +100,7 @@ if (typeof window.jobTrackerLoaded === 'undefined') {
     }
 
     jobData.jobUrl = url;
-    console.log('Final extracted data:', jobData);
+    //console.log('Final extracted data:', jobData);
     return jobData;
   }
 
@@ -236,7 +236,7 @@ if (typeof window.jobTrackerLoaded === 'undefined') {
           jobData.location = locationElement.textContent.trim();
         }
       } catch (error) {
-        console.log('Primary location selector failed, trying fallbacks');
+        //console.log('Primary location selector failed, trying fallbacks');
         // Fallback selectors
         const locationSelectors = [
           '.location_names span a',
@@ -376,7 +376,7 @@ if (typeof window.jobTrackerLoaded === 'undefined') {
 
   // Setup auto-detection only for apply button clicks
   function setupAutoApplyDetection() {
-    console.log('Setting up auto-apply detection');
+    //console.log('Setting up auto-apply detection');
     
     // Use the specific apply button class provided by user
     const applySelectors = [
@@ -393,7 +393,7 @@ if (typeof window.jobTrackerLoaded === 'undefined') {
         if (!button.hasAttribute('data-jobtracker-listener')) {
           button.setAttribute('data-jobtracker-listener', 'true');
           button.addEventListener('click', function(event) {
-            console.log('Apply button clicked, extracting data...');
+            //console.log('Apply button clicked, extracting data...');
             
             setTimeout(() => {
               isExtracting = true;
@@ -401,7 +401,7 @@ if (typeof window.jobTrackerLoaded === 'undefined') {
               
               setTimeout(() => {
                 const jobData = extractJobData();
-                console.log('Auto-extracted job data:', jobData);
+                //console.log('Auto-extracted job data:', jobData);
                 
                 hideExtractionLoader();
                 isExtracting = false;

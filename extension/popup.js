@@ -455,7 +455,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function sendToJobTracker(jobData) {
-    console.log('Sending job data to JobTracker:', jobData);
+    //console.log('Sending job data to JobTracker:', jobData);
 
     const apiUrl = 'https://job-hunter-backend-app.vercel.app/api/applications';
     
@@ -468,7 +468,7 @@ document.addEventListener('DOMContentLoaded', function() {
       body: JSON.stringify(jobData)
     })
     .then(response => {
-      console.log('API Response status:', response.status);
+      //console.log('API Response status:', response.status);
       if (response.ok) {
         return response.json();
       } else if (response.status === 409) {
@@ -477,7 +477,7 @@ document.addEventListener('DOMContentLoaded', function() {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     })
     .then(data => {
-      console.log('Successfully saved to JobTracker:', data);
+      //console.log('Successfully saved to JobTracker:', data);
       chrome.storage.local.remove(['pendingJobData']);
       showSuccessState();
     })

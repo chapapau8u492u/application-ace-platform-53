@@ -77,7 +77,7 @@ export const Dashboard = () => {
       const websocket = new WebSocket(`ws://localhost:3001`);
       
       websocket.onopen = () => {
-        console.log('Dashboard WebSocket connected');
+        //console.log('Dashboard WebSocket connected');
       };
       
       websocket.onmessage = (event) => {
@@ -109,7 +109,7 @@ export const Dashboard = () => {
       };
       
       websocket.onclose = () => {
-        console.log('Dashboard WebSocket disconnected');
+        //console.log('Dashboard WebSocket disconnected');
         setTimeout(setupWebSocket, 5000);
       };
       

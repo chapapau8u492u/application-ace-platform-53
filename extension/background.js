@@ -1,15 +1,15 @@
 
 // Background script for the Chrome extension
-console.log('JobTracker background script loaded');
+//console.log('JobTracker background script loaded');
 
 // Handle installation
 chrome.runtime.onInstalled.addListener(function(details) {
-  console.log('JobTracker extension installed');
+  //console.log('JobTracker extension installed');
 });
 
 // Handle messages from content script or popup
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  console.log('Background received message:', request);
+  //console.log('Background received message:', request);
   
   if (request.action === 'saveJobData') {
     handleSaveJobData(request.jobData, sendResponse);
@@ -25,7 +25,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 async function handleSaveJobData(jobData, sendResponse) {
-  console.log('Handling save job data:', jobData);
+  //console.log('Handling save job data:', jobData);
   
   try {
     // Try production URL first
@@ -41,7 +41,7 @@ async function handleSaveJobData(jobData, sendResponse) {
     
     if (response.ok) {
       const data = await response.json();
-      console.log('Successfully saved to production app:', data);
+      //console.log('Successfully saved to production app:', data);
       sendResponse({success: true, data: data});
       
       // Also try to communicate directly with any open JobTracker tabs
@@ -68,7 +68,7 @@ async function handleSaveJobData(jobData, sendResponse) {
       
       if (fallbackResponse.ok) {
         const data = await fallbackResponse.json();
-        console.log('Successfully saved to localhost:', data);
+        //console.log('Successfully saved to localhost:', data);
         sendResponse({success: true, data: data});
         
         // Also try to communicate directly with any open JobTracker tabs
@@ -109,10 +109,10 @@ async function notifyJobTrackerTabs(jobData) {
             type: 'JOB_APPLICATION_DATA',
             jobData: jobData
           });
-          console.log('Sent job data to JobTracker tab:', tab.url);
+          //console.log('Sent job data to JobTracker tab:', tab.url);
           notified = true;
         } catch (error) {
-          console.log('Could not send message to tab:', error);
+          //console.log('Could not send message to tab:', error);
           
           // Try using executeScript to inject the data
           try {
@@ -134,13 +134,13 @@ async function notifyJobTrackerTabs(jobData) {
                   newValue: JSON.stringify(data)
                 }));
                 
-                console.log('JobTracker extension: Data injected into app');
+                //console.log('JobTracker extension: Data injected into app');
               },
               args: [jobData]
             });
             notified = true;
           } catch (scriptError) {
-            console.log('Could not inject script:', scriptError);
+            //console.log('Could not inject script:', scriptError);
           }
         }
       }

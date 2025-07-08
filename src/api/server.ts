@@ -15,16 +15,16 @@ export class ServerAPI {
   }
   
   private initializeAPI() {
-    console.log('Initializing server API for JobTracker');
+    //console.log('Initializing server API for JobTracker');
     
     // Set up CORS headers for development
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      console.log('Development mode: Setting up CORS handling');
+      //console.log('Development mode: Setting up CORS handling');
     }
   }
   
   public async handleApplicationSubmission(jobData: any): Promise<any> {
-    console.log('Server API: Handling application submission', jobData);
+    //console.log('Server API: Handling application submission', jobData);
     
     try {
       // Validate the data
@@ -73,7 +73,7 @@ export class ServerAPI {
       // Save back to localStorage
       localStorage.setItem('jobApplications', JSON.stringify(applications));
       
-      console.log('Server API: Application saved successfully', processedApplication);
+      //console.log('Server API: Application saved successfully', processedApplication);
       
       // Trigger a storage event to notify the Applications component
       window.dispatchEvent(new StorageEvent('storage', {
@@ -98,5 +98,5 @@ export class ServerAPI {
 }
 
 // Initialize the server API
-console.log('Initializing Server API handler');
+//console.log('Initializing Server API handler');
 ServerAPI.getInstance();

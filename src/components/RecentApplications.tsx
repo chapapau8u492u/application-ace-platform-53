@@ -53,7 +53,7 @@ export const RecentApplications = () => {
         throw new Error('Backend not available');
       }
     } catch (error) {
-      console.log('Loading from localStorage fallback');
+      //console.log('Loading from localStorage fallback');
       const savedApplications = localStorage.getItem('jobApplications');
       if (savedApplications) {
         try {

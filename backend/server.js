@@ -26,7 +26,7 @@ let applicationsCollection;
 async function initMongoDB() {
   try {
     await client.connect();
-    console.log("Connected to MongoDB successfully!");
+    //console.log("Connected to MongoDB successfully!");
     
     db = client.db("jobtracker");
     applicationsCollection = db.collection("applications");
@@ -115,7 +115,7 @@ function validateJobData(jobData) {
 
 // WebSocket connection handling
 wss.on('connection', async (ws) => {
-  console.log('Client connected to WebSocket');
+  //console.log('Client connected to WebSocket');
   
   try {
     // Send current applications to new client
@@ -133,7 +133,7 @@ wss.on('connection', async (ws) => {
   }
   
   ws.on('close', () => {
-    console.log('Client disconnected from WebSocket');
+    //console.log('Client disconnected from WebSocket');
   });
 });
 
@@ -204,7 +204,7 @@ app.post('/api/applications/sync', async (req, res) => {
 app.post('/api/applications', async (req, res) => {
   try {
     const jobData = validateJobData(req.body);
-    console.log('Received job application:', jobData);
+    //console.log('Received job application:', jobData);
     
     // Create new application
     const newApplication = {
@@ -245,7 +245,7 @@ app.post('/api/applications', async (req, res) => {
       application: newApplication
     });
     
-    console.log('Application saved successfully:', newApplication.id);
+    //console.log('Application saved successfully:', newApplication.id);
     
     res.json({
       success: true,
@@ -365,9 +365,9 @@ async function startServer() {
   await initMongoDB();
   
   server.listen(PORT, () => {
-    console.log(`JobTracker Backend running on port ${PORT}`);
-    console.log(`WebSocket server ready for real-time updates`);
-    console.log(`MongoDB connected to Job-Hunter cluster`);
+    //console.log(`JobTracker Backend running on port ${PORT}`);
+    //console.log(`WebSocket server ready for real-time updates`);
+    //console.log(`MongoDB connected to Job-Hunter cluster`);
   });
 }
 

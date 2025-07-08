@@ -101,14 +101,14 @@ export const Applications = () => {
       const response = await fetch(`${BACKEND_URL}/api/applications`);
       if (response.ok) {
         const data = await response.json();
-        console.log('Loaded applications from backend:', data.applications);
+        //console.log('Loaded applications from backend:', data.applications);
         setApplications(data.applications || []);
         setBackendConnected(true);
       } else {
         throw new Error('Backend not available');
       }
     } catch (error) {
-      console.log('Backend not available, using localStorage');
+      //console.log('Backend not available, using localStorage');
       setBackendConnected(false);
       
       const savedApplications = localStorage.getItem('jobApplications');
@@ -127,7 +127,7 @@ export const Applications = () => {
   };
 
   const addApplication = async (applicationData: Partial<JobApplication>) => {
-    console.log('Adding application:', applicationData);
+    //console.log('Adding application:', applicationData);
     
     if (!applicationData.company && !applicationData.position) {
       console.warn('Insufficient application data:', applicationData);
@@ -158,7 +158,7 @@ export const Applications = () => {
 
         if (response.ok) {
           const result = await response.json();
-          console.log('Application added successfully:', result.data);
+          //console.log('Application added successfully:', result.data);
           loadApplications();
           toast({
             title: "Application Added Successfully! 🎉",

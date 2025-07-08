@@ -18,12 +18,12 @@ export class ApplicationAPI {
   }
 
   private setupEventListeners() {
-    console.log('Setting up application API event listeners');
+    //console.log('Setting up application API event listeners');
     
     // Listen for messages from the extension
     window.addEventListener('message', (event) => {
       if (event.data.type === 'JOB_APPLICATION_DATA') {
-        console.log('Received job application data via message:', event.data.jobData);
+        //console.log('Received job application data via message:', event.data.jobData);
         this.handleJobApplicationData(event.data.jobData);
       }
     });
@@ -33,7 +33,7 @@ export class ApplicationAPI {
       if (event.key === 'extensionJobData' && event.newValue) {
         try {
           const jobData = JSON.parse(event.newValue);
-          console.log('Received job application data via storage:', jobData);
+          //console.log('Received job application data via storage:', jobData);
           this.handleJobApplicationData(jobData);
         } catch (error) {
           console.error('Error parsing storage job data:', error);
@@ -43,7 +43,7 @@ export class ApplicationAPI {
   }
 
   private setupFetchHandler() {
-    console.log('Setting up fetch handler for extension API');
+    //console.log('Setting up fetch handler for extension API');
     
     // Intercept fetch requests to our API endpoint
     const originalFetch = window.fetch;
@@ -54,11 +54,11 @@ export class ApplicationAPI {
       // Handle API requests from extension
       if (url.includes('/api/applications') && init?.method === 'POST') {
         try {
-          console.log('Intercepted fetch request to applications API');
+          //console.log('Intercepted fetch request to applications API');
           const body = init.body as string;
           const jobData = JSON.parse(body);
           
-          console.log('Processing job data from extension:', jobData);
+          //console.log('Processing job data from extension:', jobData);
           
           // Forward to backend
           const response = await fetch(`${BACKEND_URL}/api/applications`, {
@@ -71,7 +71,7 @@ export class ApplicationAPI {
           
           if (response.ok) {
             const result = await response.json();
-            console.log('Application saved to backend:', result);
+            //console.log('Application saved to backend:', result);
             
             return new Response(JSON.stringify(result), {
               status: 200,
@@ -115,7 +115,7 @@ export class ApplicationAPI {
   }
 
   private async handleJobApplicationData(jobData: any) {
-    console.log('Handling job application data:', jobData);
+    //console.log('Handling job application data:', jobData);
     
     try {
       // Send to backend
@@ -129,7 +129,7 @@ export class ApplicationAPI {
       
       if (response.ok) {
         const result = await response.json();
-        console.log('Job application processed successfully:', result);
+        //console.log('Job application processed successfully:', result);
       } else {
         const error = await response.json();
         console.warn('Failed to process job application:', error);
@@ -141,5 +141,5 @@ export class ApplicationAPI {
 }
 
 // Initialize the API handler
-console.log('Initializing Application API handler');
+//console.log('Initializing Application API handler');
 ApplicationAPI.getInstance();

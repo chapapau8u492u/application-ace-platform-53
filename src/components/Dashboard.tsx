@@ -29,7 +29,7 @@ export const Dashboard = () => {
 
   useEffect(() => {
     loadApplications();
-    setupWebSocket();
+    // setupWebSocket();
   }, []);
 
   const loadApplications = async () => {
@@ -72,55 +72,55 @@ export const Dashboard = () => {
     }
   };
 
- const setupWebSocket = () => {
-  try {
-    const websocket = new WebSocket(`wss://8ae62f2b-58a6-4dbd-854a-705f9d835a81-00-3jv2cfl5jmwc5.sisko.replit.dev/`);
+//  const setupWebSocket = () => {
+//   try {
+//     const websocket = new WebSocket(`wss://8ae62f2b-58a6-4dbd-854a-705f9d835a81-00-3jv2cfl5jmwc5.sisko.replit.dev/`);
     
-    websocket.onopen = () => {
-      // Connected successfully (no output)
-    };
+//     websocket.onopen = () => {
+//       // Connected successfully (no output)
+//     };
 
-    websocket.onerror = () => {
-      // Silently handle connection errors
-    };
+//     websocket.onerror = () => {
+//       // Silently handle connection errors
+//     };
 
-    websocket.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
+//     websocket.onmessage = (event) => {
+//       try {
+//         const data = JSON.parse(event.data);
         
-        switch (data.type) {
-          case 'INITIAL_DATA':
-            setApplications(data.applications || []);
-            break;
-          case 'NEW_APPLICATION':
-            setApplications(prev => {
-              const exists = prev.some(app => app.id === data.application.id);
-              if (exists) return prev;
-              return [data.application, ...prev];
-            });
-            break;
-          case 'APPLICATION_UPDATED':
-            setApplications(prev => 
-              prev.map(app => 
-                app.id === data.application.id ? data.application : app
-              )
-            );
-            break;
-        }
-      } catch {
-        // Silently ignore malformed JSON
-      }
-    };
+//         switch (data.type) {
+//           case 'INITIAL_DATA':
+//             setApplications(data.applications || []);
+//             break;
+//           case 'NEW_APPLICATION':
+//             setApplications(prev => {
+//               const exists = prev.some(app => app.id === data.application.id);
+//               if (exists) return prev;
+//               return [data.application, ...prev];
+//             });
+//             break;
+//           case 'APPLICATION_UPDATED':
+//             setApplications(prev => 
+//               prev.map(app => 
+//                 app.id === data.application.id ? data.application : app
+//               )
+//             );
+//             break;
+//         }
+//       } catch {
+//         // Silently ignore malformed JSON
+//       }
+//     };
 
-    websocket.onclose = () => {
-      // Silently reconnect after 5 seconds
-      setTimeout(setupWebSocket, 5000);
-    };
+//     websocket.onclose = () => {
+//       // Silently reconnect after 5 seconds
+//       setTimeout(setupWebSocket, 5000);
+//     };
 
-  } catch {
-    // Silently ignore WebSocket setup errors
-  }
-};
+//   } catch {
+//     // Silently ignore WebSocket setup errors
+//   }
+// };
 
 
   if (isLoading) {

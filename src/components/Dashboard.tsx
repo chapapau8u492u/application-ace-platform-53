@@ -74,7 +74,7 @@ export const Dashboard = () => {
 
   const setupWebSocket = () => {
     try {
-      const websocket = new WebSocket(`ws://https://job-hunter-backend-app.vercel.app`);
+      const websocket = new WebSocket(`ws://job-hunter-backend-app.vercel.app`);
       
       websocket.onopen = () => {
         //console.log('Dashboard WebSocket connected');

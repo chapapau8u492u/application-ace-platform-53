@@ -88,7 +88,7 @@ export const Applications = () => {
 
   const checkBackendConnection = async () => {
     try {
-      const response = await fetch(`https://job-hunter-backend-sigma.vercel.apphealth`);
+      const response = await fetch(`https://job-hunter-backend-sigma.vercel.app/health`);
       setBackendConnected(response.ok);
     } catch (error) {
       setBackendConnected(false);

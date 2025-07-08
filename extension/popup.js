@@ -487,7 +487,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (error.message === 'DUPLICATE_APPLICATION') {
         showStatus('❌ This application already exists in your JobTracker!', 'error');
       } else if (error.message.includes('Failed to fetch')) {
-        showStatus('❌ Cannot connect to JobTracker. Please ensure the app is running on localhost:3001', 'error');
+        showStatus('❌ Cannot connect to JobTracker. Please ensure the app is running on https://job-hunter-backend-app.vercel.app', 'error');
       } else {
         showStatus('❌ An error occurred while saving. Please try again.', 'error');
       }

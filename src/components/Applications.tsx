@@ -88,7 +88,7 @@ export const Applications = () => {
 
   const checkBackendConnection = async () => {
     try {
-      const response = await fetch(`https://job-hunter-backend-8ugy.onrender.com/health`);
+      const response = await fetch(`https://8ae62f2b-58a6-4dbd-854a-705f9d835a81-00-3jv2cfl5jmwc5.sisko.replit.dev/health`);
       setBackendConnected(response.ok);
     } catch (error) {
       setBackendConnected(false);

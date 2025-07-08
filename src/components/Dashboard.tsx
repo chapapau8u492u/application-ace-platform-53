@@ -74,7 +74,7 @@ export const Dashboard = () => {
 
   const setupWebSocket = () => {
     try {
-      const websocket = new WebSocket(`wss://job-hunter-backend-8ugy.onrender.com`);
+      const websocket = new WebSocket(`wss://8ae62f2b-58a6-4dbd-854a-705f9d835a81-00-3jv2cfl5jmwc5.sisko.replit.dev/`);
       
       websocket.onopen = () => {
         //console.log('Dashboard WebSocket connected');

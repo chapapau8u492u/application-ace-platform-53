@@ -72,51 +72,51 @@ export const Dashboard = () => {
     }
   };
 
-  const setupWebSocket = () => {
-    try {
-      const websocket = new WebSocket(`wss://8ae62f2b-58a6-4dbd-854a-705f9d835a81-00-3jv2cfl5jmwc5.sisko.replit.dev/`);
+  // const setupWebSocket = () => {
+  //   try {
+  //     const websocket = new WebSocket(`wss://8ae62f2b-58a6-4dbd-854a-705f9d835a81-00-3jv2cfl5jmwc5.sisko.replit.dev/`);
       
-      websocket.onopen = () => {
-        //console.log('Dashboard WebSocket connected');
-      };
+  //     websocket.onopen = () => {
+  //       //console.log('Dashboard WebSocket connected');
+  //     };
       
-      websocket.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
+  //     websocket.onmessage = (event) => {
+  //       try {
+  //         const data = JSON.parse(event.data);
           
-          switch (data.type) {
-            case 'INITIAL_DATA':
-              setApplications(data.applications || []);
-              break;
-            case 'NEW_APPLICATION':
-              setApplications(prev => {
-                const exists = prev.some(app => app.id === data.application.id);
-                if (exists) return prev;
-                return [data.application, ...prev];
-              });
-              break;
-            case 'APPLICATION_UPDATED':
-              setApplications(prev => 
-                prev.map(app => 
-                  app.id === data.application.id ? data.application : app
-                )
-              );
-              break;
-          }
-        } catch (error) {
-          console.error('Error parsing WebSocket message:', error);
-        }
-      };
+  //         switch (data.type) {
+  //           case 'INITIAL_DATA':
+  //             setApplications(data.applications || []);
+  //             break;
+  //           case 'NEW_APPLICATION':
+  //             setApplications(prev => {
+  //               const exists = prev.some(app => app.id === data.application.id);
+  //               if (exists) return prev;
+  //               return [data.application, ...prev];
+  //             });
+  //             break;
+  //           case 'APPLICATION_UPDATED':
+  //             setApplications(prev => 
+  //               prev.map(app => 
+  //                 app.id === data.application.id ? data.application : app
+  //               )
+  //             );
+  //             break;
+  //         }
+  //       } catch (error) {
+  //         console.error('Error parsing WebSocket message:', error);
+  //       }
+  //     };
       
-      websocket.onclose = () => {
-        //console.log('Dashboard WebSocket disconnected');
-        setTimeout(setupWebSocket, 5000);
-      };
+  //     websocket.onclose = () => {
+  //       //console.log('Dashboard WebSocket disconnected');
+  //       setTimeout(setupWebSocket, 5000);
+  //     };
       
-    } catch (error) {
-      console.error('Error setting up WebSocket:', error);
-    }
-  };
+  //   } catch (error) {
+  //     console.error('Error setting up WebSocket:', error);
+  //   }
+  // };
 
   if (isLoading) {
     return (

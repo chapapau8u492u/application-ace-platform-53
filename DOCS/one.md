@@ -97,7 +97,7 @@ JobTracker Assistant is a comprehensive job application management system design
   "host_permissions": [
     "https://www.linkedin.com/*",
     "https://internshala.com/*",
-    "https://job-hunter-backend-app.vercel.app/*"
+    "https://job-hunter-backend-sigma.vercel.app/*"
   ],
   "content_scripts": [{
     "matches": ["https://www.linkedin.com/jobs/*", "https://internshala.com/internship/*"],

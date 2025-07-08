@@ -182,7 +182,7 @@ const statusConfig = {
   "host_permissions": [
     "https://www.linkedin.com/*",
     "https://internshala.com/*",
-    "https://job-hunter-backend-app.vercel.app/*"
+    "https://job-hunter-backend-sigma.vercel.app/*"
   ],
   "content_scripts": [{
     "matches": ["https://www.linkedin.com/jobs/*", "https://internshala.com/internship/*"],
@@ -259,7 +259,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 async function handleSaveJobData(jobData, sendResponse) {
   try {
     // Primary: Backend API
-    const response = await fetch('https://job-hunter-backend-app.vercel.app/api/applications', {
+    const response = await fetch('https://job-hunter-backend-sigma.vercel.app/api/applications', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(jobData)

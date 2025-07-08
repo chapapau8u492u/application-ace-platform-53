@@ -29,7 +29,7 @@ async function handleSaveJobData(jobData, sendResponse) {
   
   try {
     // Try production URL first
-    const response = await fetch('https://job-hunter-backend-app.vercel.app/api/applications', {
+    const response = await fetch('https://job-hunter-backend-sigma.vercel.app/api/applications', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ async function handleSaveJobData(jobData, sendResponse) {
     
     try {
       // Fallback to localhost for development
-      const fallbackResponse = await fetch('https://job-hunter-backend-app.vercel.app/api/applications', {
+      const fallbackResponse = await fetch('https://job-hunter-backend-sigma.vercel.app/api/applications', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -8,12 +8,14 @@ import {
   Building2, 
   Settings,
   Home,
-  Sparkles
+  Sparkles,
+  Download
 } from 'lucide-react';
 
 const navItems = [
   { icon: Home, label: 'Dashboard', path: '/' },
   { icon: Briefcase, label: 'Applications', path: '/applications' },
+  { icon: Download, label: 'Extension', path: '/extension' },
   { icon: Building2, label: 'Companies', path: '/companies' },
   { icon: Calendar, label: 'Interviews', path: '/interviews' },
   { icon: BarChart3, label: 'Analytics', path: '/analytics' },
@@ -56,18 +58,6 @@ export const Sidebar = () => {
         ))}
       </nav>
       
-      <div className="absolute bottom-8 left-6 right-6">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 text-white shadow-xl">
-          <div className="flex items-center space-x-3 mb-3">
-            <Sparkles className="w-5 h-5" />
-            <h3 className="font-semibold">AI Assistant</h3>
-          </div>
-          <p className="text-sm text-blue-100 mb-4">Get personalized career insights and application tips</p>
-          <button className="w-full bg-white/20 hover:bg-white/30 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200">
-            Get Started
-          </button>
-        </div>
-      </div>
     </div>
   );
 };

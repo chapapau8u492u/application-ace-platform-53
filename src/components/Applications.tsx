@@ -84,6 +84,18 @@ export const Applications = () => {
   useEffect(() => {
     loadApplications();
     checkBackendConnection();
+    
+    // Listen for global refresh events from extension
+    const handleRefresh = () => {
+      console.log('Applications component: Received refresh event, reloading...');
+      loadApplications();
+    };
+    
+    window.addEventListener('jobApplicationAdded', handleRefresh);
+    
+    return () => {
+      window.removeEventListener('jobApplicationAdded', handleRefresh);
+    };
   }, []);
 
   const checkBackendConnection = async () => {

@@ -175,13 +175,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Try multiple selectors for job title
       const titleSelectors = [
+        '.top-card-layout__title', // LinkedIn new layout
+        '.sub-nav-cta__header', // LinkedIn new layout
+        '.topcard__title', // LinkedIn new layout
+        'span[apptranslate="tataCrucible.title"]', // Unstop
+        'span[skiptranslate="true"]', // Unstop
         '.job-title-href',
         '.job-title',
         'h1[data-testid="job-title"]',
         '.jobs-unified-top-card__job-title',
         '.jobsearch-SerpJobCard h2 a',
         '.job-title-link',
-        '[data-cy="job-title"]'
+        '[data-cy="job-title"]',
+        'h1' // Generic fallback
       ];
 
       for (const selector of titleSelectors) {
@@ -194,12 +200,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Try multiple selectors for company
       const companySelectors = [
+        '.topcard__org-name-link', // LinkedIn new layout
+        '.sub-nav-cta__optional-url', // LinkedIn new layout
+        '.top-card-layout__second-subline .topcard__org-name-link', // LinkedIn new layout
         '.jobs-unified-top-card__company-name a',
         '.jobs-unified-top-card__company-name',
         '.jobsearch-SerpJobCard .company',
         '.company-name',
         '[data-cy="company-name"]',
-        '.job-company'
+        '.job-company',
+        '.org_name', // Unstop
+        '.blue_un-hover' // Unstop
       ];
 
       for (const selector of companySelectors) {
@@ -212,6 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Try multiple selectors for salary/stipend
       const salarySelectors = [
+        '.main-job-card__salary-info', // LinkedIn new layout
         '.stipend',
         '.jobs-unified-top-card__job-insight .jobs-unified-top-card__job-insight-text',
         '.salary-snippet',
@@ -232,6 +244,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Try multiple selectors for location
       const locationSelectors = [
+        '.sub-nav-cta__meta-text', // LinkedIn new layout
+        '.topcard__flavor--bullet', // LinkedIn new layout
+        '.main-job-card__location', // LinkedIn new layout
         '.jobs-unified-top-card__bullet',
         '.location',
         '.job-location',
@@ -248,6 +263,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Try multiple selectors for description
       const descriptionSelectors = [
+        '.description__text--rich', // LinkedIn new layout
+        '.show-more-less-html__markup', // LinkedIn new layout
+        '.un_editor_text_live[skiptranslate="true"]', // Unstop
+        '.blue_un-border-before.un_editor_text_live', // Unstop
+        '.tab-detail .un_editor_text_live', // Unstop
         '.job_summary_container',
         '.jobs-description__content',
         '.jobsearch-jobDescriptionText',
@@ -282,6 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
       'linkedin.com/jobs',
       'internshala.com/internship',
       'internshala.com/job',
+      'unstop.com',
       'naukri.com',
       'indeed.com',
       'glassdoor.com',
@@ -455,9 +476,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function sendToJobTracker(jobData) {
-    //console.log('Sending job data to JobTracker:', jobData);
+    console.log('Sending job data to JobTracker:', jobData);
 
-    const apiUrl = 'https://job-hunter-backend-sigma.vercel.appapi/applications';
+    const apiUrl = 'https://job-hunter-backend-sigma.vercel.app/api/applications';
     
     fetch(apiUrl, {
       method: 'POST',
@@ -468,16 +489,20 @@ document.addEventListener('DOMContentLoaded', function() {
       body: JSON.stringify(jobData)
     })
     .then(response => {
-      //console.log('API Response status:', response.status);
+      console.log('API Response status:', response.status);
       if (response.ok) {
         return response.json();
       } else if (response.status === 409) {
         throw new Error('DUPLICATE_APPLICATION');
       }
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      console.error(`Server error: ${response.status} ${response.statusText}`);
+      return response.text().then(text => {
+        console.error('Server error response:', text);
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      });
     })
     .then(data => {
-      //console.log('Successfully saved to JobTracker:', data);
+      console.log('Successfully saved to JobTracker:', data);
       chrome.storage.local.remove(['pendingJobData']);
       showSuccessState();
     })
@@ -486,12 +511,100 @@ document.addEventListener('DOMContentLoaded', function() {
       
       if (error.message === 'DUPLICATE_APPLICATION') {
         showStatus('❌ This application already exists in your JobTracker!', 'error');
-      } else if (error.message.includes('Failed to fetch')) {
-        showStatus('❌ Cannot connect to JobTracker. Please ensure the app is running on https://job-hunter-backend-sigma.vercel.app', 'error');
+        resetSaveButton();
+      } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+        // Server is down, try local storage fallback
+        console.log('Server unavailable, attempting local storage fallback...');
+        saveToLocalStorage(jobData);
       } else {
         showStatus('❌ An error occurred while saving. Please try again.', 'error');
+        resetSaveButton();
       }
+    });
+  }
+
+  function saveToLocalStorage(jobData) {
+    try {
+      // Generate a unique ID for the application
+      const applicationId = 'local_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      
+      const localApplication = {
+        id: applicationId,
+        ...jobData,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        source: 'extension_local_storage'
+      };
+      
+      // Get existing local applications
+      chrome.storage.local.get(['localApplications'], function(result) {
+        const existingApplications = result.localApplications || [];
+        
+        // Check for duplicates
+        const isDuplicate = existingApplications.some(app => 
+          app.company.toLowerCase() === localApplication.company.toLowerCase() &&
+          app.position.toLowerCase() === localApplication.position.toLowerCase() &&
+          (app.jobUrl === localApplication.jobUrl || (!app.jobUrl && !localApplication.jobUrl))
+        );
+        
+        if (isDuplicate) {
+          showStatus('❌ This application already exists in your local storage!', 'error');
+          resetSaveButton();
+          return;
+        }
+        
+        // Add to local storage
+        existingApplications.unshift(localApplication);
+        
+        chrome.storage.local.set({
+          localApplications: existingApplications,
+          pendingJobData: null
+        }, function() {
+          console.log('Application saved to local storage:', localApplication);
+          showStatus('✅ Job saved locally! Will sync when server is available.', 'success');
+          
+          // Show success state with sync info
+          setTimeout(() => {
+            showLocalStorageSuccessState();
+          }, 2000);
+        });
+      });
+      
+    } catch (error) {
+      console.error('Error saving to local storage:', error);
+      showStatus('❌ Failed to save locally. Please try again.', 'error');
       resetSaveButton();
+    }
+  }
+
+  function showLocalStorageSuccessState() {
+    content.innerHTML = `
+      <div class="success-state">
+        <div class="success-icon">💾</div>
+        <h3>Saved Locally!</h3>
+        <p>Your job application has been saved to local storage. It will automatically sync to the server when it becomes available.</p>
+        <div style="display: flex; gap: 8px; width: 100%; max-width: 300px;">
+          <button class="btn btn-primary" id="newExtractBtn" style="flex: 1;">Extract Another Job</button>
+          <button class="btn btn-secondary" id="viewLocalBtn" style="flex: 1;">View Local Jobs</button>
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('newExtractBtn')?.addEventListener('click', () => {
+      hasExtractedData = false;
+      currentJobData = null;
+      extractFromCurrentPage();
+    });
+    
+    document.getElementById('viewLocalBtn')?.addEventListener('click', () => {
+      chrome.storage.local.get(['localApplications'], function(result) {
+        const localApps = result.localApplications || [];
+        if (localApps.length > 0) {
+          showStatus(`📊 You have ${localApps.length} job(s) saved locally`, 'success');
+        } else {
+          showStatus('📊 No local jobs found', 'info');
+        }
+      });
     });
   }
 

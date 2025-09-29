@@ -115,7 +115,7 @@ export class ApplicationAPI {
   }
 
   private async handleJobApplicationData(jobData: any) {
-    //console.log('Handling job application data:', jobData);
+    console.log('Handling job application data:', jobData);
     
     try {
       // Send to backend
@@ -129,14 +129,73 @@ export class ApplicationAPI {
       
       if (response.ok) {
         const result = await response.json();
-        //console.log('Job application processed successfully:', result);
+        console.log('Job application processed successfully:', result);
+        
+        // Trigger a global refresh event
+        this.triggerGlobalRefresh();
+        
+        // Also save to localStorage as backup
+        this.saveToLocalStorage(jobData);
+        
       } else {
         const error = await response.json();
         console.warn('Failed to process job application:', error);
+        
+        // Still save to localStorage as fallback
+        this.saveToLocalStorage(jobData);
+        this.triggerGlobalRefresh();
       }
     } catch (error) {
       console.error('Error handling job application data:', error);
+      
+      // Save to localStorage as fallback
+      this.saveToLocalStorage(jobData);
+      this.triggerGlobalRefresh();
     }
+  }
+
+  private saveToLocalStorage(jobData: any) {
+    try {
+      const existingApplications = JSON.parse(localStorage.getItem('jobApplications') || '[]');
+      const newApplication = {
+        id: jobData.id || Date.now().toString(),
+        ...jobData,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      // Check for duplicates
+      const isDuplicate = existingApplications.some((app: any) => 
+        app.company === newApplication.company && 
+        app.position === newApplication.position &&
+        app.jobUrl === newApplication.jobUrl
+      );
+      
+      if (!isDuplicate) {
+        existingApplications.unshift(newApplication);
+        localStorage.setItem('jobApplications', JSON.stringify(existingApplications));
+        console.log('Saved to localStorage:', newApplication);
+      }
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+    }
+  }
+
+  private triggerGlobalRefresh() {
+    // Dispatch a custom event that components can listen to
+    const refreshEvent = new CustomEvent('jobApplicationAdded', {
+      detail: { timestamp: Date.now() }
+    });
+    window.dispatchEvent(refreshEvent);
+    
+    // Also trigger a storage event for additional compatibility
+    const storageEvent = new StorageEvent('storage', {
+      key: 'jobApplicationRefresh',
+      newValue: Date.now().toString()
+    });
+    window.dispatchEvent(storageEvent);
+    
+    console.log('Triggered global refresh event');
   }
 }
 

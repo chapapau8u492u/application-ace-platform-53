@@ -40,6 +40,18 @@ export const RecentApplications = () => {
 
   useEffect(() => {
     loadApplications();
+    
+    // Listen for global refresh events from extension
+    const handleRefresh = () => {
+      console.log('RecentApplications component: Received refresh event, reloading...');
+      loadApplications();
+    };
+    
+    window.addEventListener('jobApplicationAdded', handleRefresh);
+    
+    return () => {
+      window.removeEventListener('jobApplicationAdded', handleRefresh);
+    };
   }, []);
 
   const loadApplications = async () => {

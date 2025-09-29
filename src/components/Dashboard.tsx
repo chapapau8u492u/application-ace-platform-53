@@ -3,7 +3,8 @@ import { StatsCards } from './StatsCards';
 import { RecentApplications } from './RecentApplications';
 import { ApplicationChart } from './ApplicationChart';
 import { UpcomingInterviews } from './UpcomingInterviews';
-import { Sparkles, TrendingUp, Target } from 'lucide-react';
+import { Sparkles, TrendingUp, Target, Download } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface JobApplication {
   id: string;
@@ -29,7 +30,19 @@ export const Dashboard = () => {
 
   useEffect(() => {
     loadApplications();
-    // setupWebSocket();
+    setupWebSocket();
+    
+    // Listen for global refresh events from extension
+    const handleRefresh = () => {
+      console.log('Received refresh event, reloading applications...');
+      loadApplications();
+    };
+    
+    window.addEventListener('jobApplicationAdded', handleRefresh);
+    
+    return () => {
+      window.removeEventListener('jobApplicationAdded', handleRefresh);
+    };
   }, []);
 
   const loadApplications = async () => {
@@ -72,55 +85,56 @@ export const Dashboard = () => {
     }
   };
 
-//  const setupWebSocket = () => {
-//   try {
-//     const websocket = new WebSocket(`wss://8ae62f2b-58a6-4dbd-854a-705f9d835a81-00-3jv2cfl5jmwc5.sisko.replit.dev/`);
+  const setupWebSocket = () => {
+    try {
+      const websocket = new WebSocket(`wss://job-hunter-backend-sigma.vercel.app`);
     
-//     websocket.onopen = () => {
-//       // Connected successfully (no output)
-//     };
+      websocket.onopen = () => {
+        console.log('WebSocket connected to backend');
+      };
 
-//     websocket.onerror = () => {
-//       // Silently handle connection errors
-//     };
+      websocket.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
 
-//     websocket.onmessage = (event) => {
-//       try {
-//         const data = JSON.parse(event.data);
-        
-//         switch (data.type) {
-//           case 'INITIAL_DATA':
-//             setApplications(data.applications || []);
-//             break;
-//           case 'NEW_APPLICATION':
-//             setApplications(prev => {
-//               const exists = prev.some(app => app.id === data.application.id);
-//               if (exists) return prev;
-//               return [data.application, ...prev];
-//             });
-//             break;
-//           case 'APPLICATION_UPDATED':
-//             setApplications(prev => 
-//               prev.map(app => 
-//                 app.id === data.application.id ? data.application : app
-//               )
-//             );
-//             break;
-//         }
-//       } catch {
-//         // Silently ignore malformed JSON
-//       }
-//     };
+      websocket.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          console.log('WebSocket message received:', data);
+          
+          switch (data.type) {
+            case 'INITIAL_DATA':
+              setApplications(data.applications || []);
+              break;
+            case 'NEW_APPLICATION':
+              setApplications(prev => {
+                const exists = prev.some(app => app.id === data.application.id);
+                if (exists) return prev;
+                return [data.application, ...prev];
+              });
+              break;
+            case 'APPLICATION_UPDATED':
+              setApplications(prev => 
+                prev.map(app => 
+                  app.id === data.application.id ? data.application : app
+                )
+              );
+              break;
+          }
+        } catch (error) {
+          console.error('Error parsing WebSocket message:', error);
+        }
+      };
 
-//     websocket.onclose = () => {
-//       // Silently reconnect after 5 seconds
-//       setTimeout(setupWebSocket, 5000);
-//     };
+      websocket.onclose = () => {
+        console.log('WebSocket disconnected, reconnecting in 5 seconds...');
+        setTimeout(setupWebSocket, 5000);
+      };
 
-//   } catch {
-//     // Silently ignore WebSocket setup errors
-//   }
-// };
+    } catch (error) {
+      console.error('WebSocket setup error:', error);
+    }
+  };
 
 
   if (isLoading) {
@@ -171,6 +185,29 @@ export const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Extension Download Section */}
+      {applications.length === 0 && (
+        <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-2xl p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                <Download className="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Get the Chrome Extension</h3>
+                <p className="text-gray-600">Automatically extract and save job applications with one click</p>
+              </div>
+            </div>
+            <Link to="/extension">
+              <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold transition-colors duration-200 flex items-center space-x-2">
+                <Download className="w-4 h-4" />
+                <span>Download Extension</span>
+              </button>
+            </Link>
+          </div>
+        </div>
+      )}
       
       <StatsCards applications={applications} />
       
